@@ -45,7 +45,7 @@ def generate():
         'sec-fetch-dest': 'empty',
         'referer': 'https://www.93cp16.com/home/',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'cookie': 'affid=null',
+        'cookie': 'affid=null;ssid1=cafc972161ab0ded340b71b7b4a841e4',
     }
     response = requests.get('https://www.93cp16.com/web/rest/captcha/generate', headers=headers, verify=False, timeout=(6.05, 6.05))
     print(response.text)
@@ -86,7 +86,7 @@ def validate(positionX, positionY, uuid):
         'sec-fetch-dest': 'empty',
         'referer': 'https://www.93cp16.com/home/',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'cookie': 'affid=null',
+        'cookie': 'affid=null;ssid1=cafc972161ab0ded340b71b7b4a841e4',
     }
     json_ = {
         'positionX': positionX,
@@ -123,71 +123,71 @@ def ssid():
 
 
 
-def cashlogin(session: requests.Session, account='!guest!', password='!guest!', force_login=False):
-    token = ''
-    ssid1 = ''
-    random = ''
-    with open('token.txt', mode='r', encoding='utf8') as file:
-        token = file.read().strip()
-    with open('ssid1.txt', mode='r', encoding='utf8') as file:
-        ssid1 = file.read().strip()
-    with open('random.txt', mode='r', encoding='utf8') as file:
-        random = file.read().strip()
-    return token, ssid1, random
+# def cashlogin(session: requests.Session, account='!guest!', password='!guest!', force_login=False):
+#     token = ''
+#     ssid1 = ''
+#     random = ''
+#     with open('token.txt', mode='r', encoding='utf8') as file:
+#         token = file.read().strip()
+#     with open('ssid1.txt', mode='r', encoding='utf8') as file:
+#         ssid1 = file.read().strip()
+#     with open('random.txt', mode='r', encoding='utf8') as file:
+#         random = file.read().strip()
+#     return token, ssid1, random
 
 
 
 
 # 登陆接口
-# account='hry622848', password='qwe249870'
-# @CatchException(20, 6)
-# def cashlogin(session: requests.Session, account='!guest!', password='!guest!', force_login=False):
-#     os.makedirs('account', exist_ok=True)
-#     os.makedirs(os.path.join('account', 'bet'), exist_ok=True)
-#
-#     path = ''
-#     if not account or not password:
-#         path = os.path.join('account', 'bet', 'guest.txt')
-#         account = '!guest!'
-#         password = '!guest!'
-#     else:
-#         path = os.path.join('account', 'bet', f'{account}#{password}.txt')
-#     if not force_login and os.path.exists(path):
-#         token = ''
-#         with open(path, mode='r', encoding='utf-8') as file:
-#             token = file.read().strip()
-#             return token
-#     if 'guest' not in account:
-#         positionY, uuid = generate()
-#         positionX = int(base64_api(uname='sheli19888', pwd='yang1314', typeid=33)) - 9
-#         cryptograph, code = validate(positionX=positionX, positionY=positionY, uuid=uuid)
-#     headers = {
-#         'authority': 'www.93cp16.com',
-#         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
-#         'accept': 'application/json, text/plain, */*',
-#         'sec-ch-ua-mobile': '?0',
-#         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
-#         'sec-ch-ua-platform': '"macOS"',
-#         'origin': 'https://www.93cp16.com',
-#         'sec-fetch-site': 'same-origin',
-#         'sec-fetch-mode': 'cors',
-#         'sec-fetch-dest': 'empty',
-#         'referer': 'https://www.93cp16.com/home/',
-#         'accept-language': 'zh-CN,zh;q=0.9',
-#         'cookie': 'affid=null',
-#     }
-#     if 'guest' in account:
-#         url = f'https://www.93cp16.com/web/rest/cashlogin?account={account}&password={password}'
-#     else:
-#         url = f'https://www.93cp16.com/web/rest/cashlogin?account={account}&password={password}&code={code}&cryptograph={cryptograph}'
-#     response = session.post(url, headers=headers, verify=False)
-#     #print(response.text)
-#     t = response.json()['message'].split('=')[1]
-#
-#     with open(path, mode='w', encoding='utf-8') as file:
-#         file.write(t)
-#
-#     return response.text
+#account='hry622848', password='qwe249870'
+@CatchException(20, 6)
+def cashlogin(session: requests.Session, account='!guest!', password='!guest!', force_login=False):
+    os.makedirs('account', exist_ok=True)
+    os.makedirs(os.path.join('account', 'bet'), exist_ok=True)
+
+    path = ''
+    if not account or not password:
+        path = os.path.join('account', 'bet', 'guest.txt')
+        account = '!guest!'
+        password = '!guest!'
+    else:
+        path = os.path.join('account', 'bet', f'{account}#{password}.txt')
+    if not force_login and os.path.exists(path):
+        token = ''
+        with open(path, mode='r', encoding='utf-8') as file:
+            token = file.read().strip()
+            return token
+    if 'guest' not in account:
+        positionY, uuid = generate()
+        positionX = int(base64_api(uname='sheli19888', pwd='yang1314', typeid=33)) - 9
+        cryptograph, code = validate(positionX=positionX, positionY=positionY, uuid=uuid)
+    headers = {
+        'authority': 'www.93cp16.com',
+        'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
+        'accept': 'application/json, text/plain, */*',
+        'sec-ch-ua-mobile': '?0',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+        'sec-ch-ua-platform': '"macOS"',
+        'origin': 'https://www.93cp16.com',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://www.93cp16.com/home/',
+        'accept-language': 'zh-CN,zh;q=0.9',
+        'cookie': 'affid=null',
+    }
+    if 'guest' in account:
+        url = f'https://www.93cp16.com/web/rest/cashlogin?account={account}&password={password}'
+    else:
+        url = f'https://www.93cp16.com/web/rest/cashlogin?account={account}&password={password}&code={code}&cryptograph={cryptograph}'
+    response = session.post(url, headers=headers, verify=False)
+    print(response.text)
+    t = response.json()['message'].split('=')[1]
+
+    with open(path, mode='w', encoding='utf-8') as file:
+        file.write(t)
+
+    return t
 #
 
 # 最新一期开奖结果
@@ -207,10 +207,10 @@ def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, 
         'sec-fetch-site': 'same-origin',
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
         'x-requested-with': 'XMLHttpRequest',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}',
     }
     params = (
-        ('lottery', 'XYFT'),
+        ('lottery', lottery),
         ('_', f'{round(time.time()*1000)}'),
     )
     response = session.get(f'https://www.93cp16.com/member/lastResult', headers=headers, timeout=request_timeout, verify=False, params=params)
@@ -255,7 +255,7 @@ def period(session: requests.Session, lottery: str, token: str, ssid1: str, rand
         'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     params = (
-        ('lottery', 'XYFT'),
+        ('lottery', lottery),
         ('_', f'{round(time.time() * 1000)}'),
     )
     response = session.get(f'https://www.93cp16.com/member/period', headers=headers, timeout=request_timeout, verify=False, params=params)
@@ -291,11 +291,16 @@ def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: 
     response = session.post('https://www.93cp16.com/member/bet', json=json_, headers=headers, timeout=(20, 20), verify=False)
     print(response.text)
     response = response.json()
-    return {
-        'balance': float(response['account']['balance']),
-        'betting': response['account']['betting'],
-        'profit': float(response['account'].get('result', 0))
-    }
+    try:
+        return {
+            'balance': float(response['account']['balance']),
+            'betting': response['account']['betting'],
+            'profit': float(response['account'].get('result', 0))
+        }
+    except:
+        return {
+            'balance': -1,
+        }
 
 
 @CatchException(2, 2)

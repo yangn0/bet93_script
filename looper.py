@@ -5,6 +5,13 @@ import requests
 import threading
 from location import Location
 
+input1=int(input("1极速飞艇 2幸运飞艇:"))
+if(input1==1):
+    lottery="LUCKYSB"
+    print("极速飞艇")
+else:
+    lottery="XYFT"
+    print("幸运飞艇")
 
 class Looper:
 
@@ -54,8 +61,7 @@ class Looper:
                 time.sleep(25)
                 self.write_config()
             time.sleep(1)
-
-
+    
     def logic(self):
         # if time.time() - self.start_ts >= 3600:
         #         #     if self.get_account()['username'] and self.get_account()['password']:
@@ -67,10 +73,13 @@ class Looper:
         #         #         if cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'], force_login=True):
         #         #             self.start_ts = time.time()
 
-        token, ssid1, random_ = cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'])
-        lottery = 'XYFT'
+        ssid1="cafc972161ab0ded340b71b7b4a841e4"
+        random_=""
+        #token="4ffed063922e2c1a029533ada871dba82ce6b8a7"
+        token = cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'])
+        #lottery = 'XYFT'
         #open_result = findFjkjhmList(session=self.session)
-        open_result = lastResult(session=self.session, lottery=lottery, token=token, ssid1=ssid1, random=random_)
+        open_result = lastResult(session=self.session, lottery=lottery, token=token,ssid1=ssid1,random=random_)
         if not open_result:
             print(f'开奖结果接口没有数据 {open_result}')
             return

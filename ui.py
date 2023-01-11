@@ -15,6 +15,17 @@ from looper import Looper
 #
 #
 #
+# import time
+# import sys
+
+# def Beijing_time():
+#     r=requests.get('https://www.baidu.com')
+#     t=time.strptime(r.headers['date'],'%a, %d %b %Y %H:%M:%S GMT')
+#     return time.mktime(t)+28800
+
+# if(Beijing_time()-1672132694>=86400*2):
+#     input("测试期已过，请联系作者。")
+#     sys.exit()
 
 keymap = {
     '极速飞艇': 'LUCKYSB',
@@ -30,7 +41,7 @@ class UI:
     def __init__(self):
         self.looper = None
         self.location_list = [None, None, None, None, None,
-                          None, None, None, None, None]
+                              None, None, None, None, None]
         self.var_amount_list = []
         self.var_start_list = []
         self.bulid_ui()
@@ -48,74 +59,92 @@ class UI:
         self.tk.title('')
         self.tk.geometry('1300x650')
 
-
         self.var_run = StringVar()
         self.var_run.set('运行')
-        Button(self.tk, textvariable=self.var_run, command=self.run).place(relx=0.1, rely=0.02, anchor=W)
+        Button(self.tk, textvariable=self.var_run, command=self.run).place(
+            relx=0.1, rely=0.02, anchor=W)
 
         self.var_err_msg = StringVar()
         self.var_err_msg.set('err_msg')
-        Label(self.tk, textvariable=self.var_err_msg, width=44, height=2).place(relx=0.15, rely=0.02, anchor=W)
+        Label(self.tk, textvariable=self.var_err_msg, width=44,
+              height=2).place(relx=0.15, rely=0.02, anchor=W)
 
-        Label(self.tk, text='账号：', width=5, height=2).place(relx=0.01, rely=0.06, anchor=W)
+        Label(self.tk, text='账号：', width=5, height=2).place(
+            relx=0.01, rely=0.06, anchor=W)
         self.var_account = StringVar()
         self.var_account.set(config.get('var_account', ''))
-        Entry(self.tk, textvariable=self.var_account, width=15).place(relx=0.04, rely=0.06, anchor=W)
+        Entry(self.tk, textvariable=self.var_account, width=15).place(
+            relx=0.04, rely=0.06, anchor=W)
 
-        Label(self.tk, text='密码：', width=5, height=2).place(relx=0.01, rely=0.1, anchor=W)
+        Label(self.tk, text='密码：', width=5, height=2).place(
+            relx=0.01, rely=0.1, anchor=W)
         self.var_password = StringVar()
         self.var_password.set(config.get('var_password', ''))
-        Entry(self.tk, textvariable=self.var_password, width=15, show='*').place(relx=0.04, rely=0.1, anchor=W)
+        Entry(self.tk, textvariable=self.var_password, width=15,
+              show='*').place(relx=0.04, rely=0.1, anchor=W)
 
-
-        Label(self.tk, text='余额：', width=5, height=2).place(relx=0.02, rely=0.16, anchor=W)
+        Label(self.tk, text='余额：', width=5, height=2).place(
+            relx=0.02, rely=0.16, anchor=W)
         self.var_balance = DoubleVar()
         self.var_balance.set(0)
-        Label(self.tk, textvariable=self.var_balance, width=7, height=2).place(relx=0.06, rely=0.16, anchor=W)
+        Label(self.tk, textvariable=self.var_balance, width=7,
+              height=2).place(relx=0.06, rely=0.16, anchor=W)
 
-
-        Label(self.tk, text='盈亏：', width=5, height=2).place(relx=0.12, rely=0.16, anchor=W)
+        Label(self.tk, text='盈亏：', width=5, height=2).place(
+            relx=0.12, rely=0.16, anchor=W)
         self.var_lottery_profit = DoubleVar()
         self.var_lottery_profit.set(config.get('var_lottery_profit', 0))
-        Entry(self.tk, textvariable=self.var_lottery_profit, width=8).place(relx=0.15, rely=0.16, anchor=W)
+        Entry(self.tk, textvariable=self.var_lottery_profit,
+              width=8).place(relx=0.15, rely=0.16, anchor=W)
 
-        Label(self.tk, text='第一轮全挂次数：', width=13, height=2).place(relx=0.02, rely=0.2, anchor=W)
+        Label(self.tk, text='第一轮全挂次数：', width=13, height=2).place(
+            relx=0.02, rely=0.2, anchor=W)
         self.var_one_out_end = IntVar()
         self.var_one_out_end.set(config.get('var_one_out_end', 0))
-        Entry(self.tk, textvariable=self.var_one_out_end, width=7).place(relx=0.11, rely=0.2, anchor=W)
+        Entry(self.tk, textvariable=self.var_one_out_end,
+              width=7).place(relx=0.11, rely=0.2, anchor=W)
 
-        Label(self.tk, text='全挂次数：', width=13, height=2).place(relx=0.02, rely=0.25, anchor=W)
+        Label(self.tk, text='全挂次数：', width=13, height=2).place(
+            relx=0.02, rely=0.25, anchor=W)
         self.var_out_end = IntVar()
         self.var_out_end.set(config.get('var_out_end', 0))
-        Entry(self.tk, textvariable=self.var_out_end, width=7).place(relx=0.11, rely=0.25, anchor=W)
+        Entry(self.tk, textvariable=self.var_out_end, width=7).place(
+            relx=0.11, rely=0.25, anchor=W)
 
-        Label(self.tk, text=f'金额：', width=5, height=2).place(relx=0.01, rely=0.3, anchor=W)
+        Label(self.tk, text=f'金额：', width=5, height=2).place(
+            relx=0.01, rely=0.3, anchor=W)
         self.var_money = StringVar()
-        self.var_money.set(config.get('var_money', '5-15-45#122-224-333#444-555-666'))
-        Entry(self.tk, textvariable=self.var_money, width=35).place(relx=0.01, rely=0.33, anchor=W)
+        self.var_money.set(config.get(
+            'var_money', '5-15-45#122-224-333#444-555-666'))
+        Entry(self.tk, textvariable=self.var_money, width=35).place(
+            relx=0.01, rely=0.33, anchor=W)
 
-        Label(self.tk, text='中退几步：', width=15, height=2).place(relx=0.02, rely=0.39, anchor=W)
+        Label(self.tk, text='中退几步：', width=15, height=2).place(
+            relx=0.02, rely=0.39, anchor=W)
         self.var_win_back = IntVar()
         self.var_win_back.set(config.get('var_win_back', 2))
-        Entry(self.tk, textvariable=self.var_win_back, width=7).place(relx=0.11, rely=0.39, anchor=W)
+        Entry(self.tk, textvariable=self.var_win_back,
+              width=7).place(relx=0.11, rely=0.39, anchor=W)
 
-        Label(self.tk, text='止盈：', width=5, height=2).place(relx=0.02, rely=0.45, anchor=W)
+        Label(self.tk, text='止盈：', width=5, height=2).place(
+            relx=0.02, rely=0.45, anchor=W)
         self.var_win_stop = IntVar()
         self.var_win_stop.set(config.get('var_win_stop', 9999))
-        Entry(self.tk, textvariable=self.var_win_stop, width=7).place(relx=0.06, rely=0.45, anchor=W)
+        Entry(self.tk, textvariable=self.var_win_stop,
+              width=7).place(relx=0.06, rely=0.45, anchor=W)
 
-        Label(self.tk, text='止损：', width=5, height=2).place(relx=0.02, rely=0.5, anchor=W)
+        Label(self.tk, text='止损：', width=5, height=2).place(
+            relx=0.02, rely=0.5, anchor=W)
         self.var_lose_stop = IntVar()
         self.var_lose_stop.set(config.get('var_lose_stop', 3333))
-        Entry(self.tk, textvariable=self.var_lose_stop, width=7).place(relx=0.06, rely=0.5, anchor=W)
+        Entry(self.tk, textvariable=self.var_lose_stop,
+              width=7).place(relx=0.06, rely=0.5, anchor=W)
 
-
-
-        self.text_plan = Text(self.tk, width=11, height=20, font=(None, 14, 'bold'))
+        self.text_plan = Text(self.tk, width=11, height=20,
+                              font=(None, 14, 'bold'))
         self.text_plan.place(relx=0.16, rely=0.68, anchor=W)
-        self.text_plan.insert('end', config.get('text_plan', '1#大\n2#双\n2#1-5-8\n3#双\n4#大'))
-
-
+        self.text_plan.insert('end', config.get(
+            'text_plan', '1#大\n2#双\n2#1-5-8\n3#双\n4#大'))
 
         # self.text_log = Text(self.tk, width=124, height=50)
         # #self.text_log.place(relx=0.36, rely=0.49, anchor=W)
@@ -126,21 +155,23 @@ class UI:
 
         self.var_issue = StringVar()
         self.var_issue.set('期号：000000001')
-        Label(self.tk, textvariable=self.var_issue, width=24, height=2, font=(None, 13, 'bold')).place(relx=0.36, rely=0.03, anchor=W)
+        Label(self.tk, textvariable=self.var_issue, width=24, height=2,
+              font=(None, 13, 'bold')).place(relx=0.36, rely=0.03, anchor=W)
 
         self.var_result = StringVar()
         self.var_result.set('开奖：1,2,3,4,5,6,7,8,9,10')
-        Label(self.tk, textvariable=self.var_result, width=25, height=2, font=(None, 13, 'bold')).place(relx=0.53, rely=0.03, anchor=W)
+        Label(self.tk, textvariable=self.var_result, width=25, height=2,
+              font=(None, 13, 'bold')).place(relx=0.53, rely=0.03, anchor=W)
 
         self.var_next_issue = StringVar()
         self.var_next_issue.set('下期：000000002')
-        Label(self.tk, textvariable=self.var_next_issue, width=25, height=2).place(relx=0.76, rely=0.03, anchor=W)
+        Label(self.tk, textvariable=self.var_next_issue, width=25,
+              height=2).place(relx=0.76, rely=0.03, anchor=W)
 
-
-
-
-        columns = ['编号', '父编号', '中挂', '第几轮', '第几注', '期号', '开奖结果', '计划', '投注内容', '投注第几名',  '投注金额', '盈亏']
-        self.tv = ttk.Treeview(self.tk, columns=columns, show='headings', height=29, padding=(1, 1, 1, 1))
+        columns = ['编号', '父编号', '中挂', '第几轮', '第几注', '期号',
+                   '开奖结果', '计划', '投注内容', '投注第几名',  '投注金额', '盈亏']
+        self.tv = ttk.Treeview(self.tk, columns=columns,
+                               show='headings', height=29, padding=(1, 1, 1, 1))
         self.tv.place(relx=0.28, rely=0.52, anchor=W)
 
         self.tv.heading('编号', text='编号')
@@ -182,7 +213,7 @@ class UI:
         VScroll1 = Scrollbar(self.tv, orient='vertical', command=self.tv.yview)
         VScroll1.place(relx=0.971, rely=0.028, relwidth=0.024, relheight=0.958)
         self.tv.configure(yscrollcommand=VScroll1.set)
-
+        self.tv.tag_configure("evenColor", background="blue",font=('',0,'bold'))  # 设置颜色
 
     def get_out_end(self):
         return self.var_out_end.get()
@@ -213,7 +244,7 @@ class UI:
             return 0
 
     def get_amount(self):
-            return list(map(lambda i: list(map(lambda j: int(j), i.split('-'))), self.var_money.get().strip().split('#')))
+        return list(map(lambda i: list(map(lambda j: int(j), i.split('-'))), self.var_money.get().strip().split('#')))
 
     def get_plan(self):
         contents = self.text_plan.get(1.0, "end")
@@ -229,8 +260,6 @@ class UI:
             return plan
         except:
             return
-
-
 
     def set_err_msg(self, err_msg: str):
         self.var_err_msg.set(err_msg)
@@ -261,26 +290,29 @@ class UI:
             time.sleep(1)
             close_second -= 1
 
-
     def set_next_issue(self, next_issue):
         self.var_next_issue.set(f'下一期：{next_issue}')
-
-
 
     def insert_items(self, data: list) -> list:
         items = []
         for i in data:
+            if(data[3] == '8'):
+                item = self.tv.insert('', 0, values=i, tags=("evenColor"))
+            else:
+                item = self.tv.insert('', 0, values=i)
             item = self.tv.insert('', 0, values=i)
             items.append(item)
         return items
 
     def insert_item(self, data):
-        item = self.tv.insert('', 0, values=data)
+        if(data[3] == '8'):
+            item = self.tv.insert('', 0, values=data, tags=("evenColor"))
+        else:
+            item = self.tv.insert('', 0, values=data)
         return item
 
     def set_item(self, item, column, value):
         self.tv.set(item=item, column=column, value=value)
-
 
     def get_second_bet(self):
         return self.var_second_bet.get()
@@ -349,25 +381,21 @@ class UI:
         except:
             return
 
-
     def get_money(self, index: int = -1):
         try:
-            amounts = list(map(lambda item: int(item), self.var_money.get().strip().split('-')))
+            amounts = list(map(lambda item: int(item),
+                           self.var_money.get().strip().split('-')))
             if index == -1:
                 return amounts
             return amounts[index]
         except:
             return
 
-
-
     def get_alianchu(self):
         return self.var_alianchu.get()
 
     def get_blianchu(self):
         return self.var_blianchu.get()
-
-
 
     def get_ge_balance_notice(self):
         return self.var_ge_balance_notice.get()
@@ -384,14 +412,14 @@ class UI:
         if not account or not password:
             self.log(f'输入账号密码，才可以提现...')
         else:
-            login_response = cashlogin(self.session, account=account, password=password)
+            login_response = cashlogin(
+                self.session, account=account, password=password)
             self.log(f'登陆 {login_response}')
-            draw_response = draw(session=self.session, cardid=self.var_cardid.get(), drawcode=self.var_drawcode.get(), drawamount=self.var_drawamount.get())
+            draw_response = draw(session=self.session, cardid=self.var_cardid.get(
+            ), drawcode=self.var_drawcode.get(), drawamount=self.var_drawamount.get())
             self.log(f'提现 {draw_response}')
             self.show_account()
             self.write_config()
-
-
 
     def write_config(self):
         sava_json = {
@@ -409,7 +437,6 @@ class UI:
         with open('config.json', mode='w', encoding='utf-8') as file:
             file.write(json.dumps(sava_json))
 
-
     def read_config(self) -> dict:
         if not os.path.exists('config.json'):
             return dict()
@@ -426,15 +453,6 @@ class UI:
         print(f"{time.strftime('%Y/%m/%d %H:%M:%S')} - {info}\n")
         return info
 
-
-
-
-
-
-
-
-
-
     def get_password(self) -> str:
         return self.var_password.get()
 
@@ -443,14 +461,6 @@ class UI:
             return float(self.var_odds.get())
         except:
             return 1.9999
-
-
-
-
-
-
-
-
 
     def get_profit_ge_stop(self) -> int:
         try:
@@ -481,9 +491,6 @@ class UI:
             return list(map(lambda item: int(item), self.var_end_time.get().split('#')))
         except:
             return []
-
-
-
 
     def show_account(self):
         account_response = userInfo(self.session)
@@ -540,11 +547,9 @@ class UI:
         else:
             self.stop_running()
 
-
     def stop_running(self):
         self.looper.flag = False
         self.var_run.set('运行')
-
 
     def start_location(self, index: int):
         self.write_config()
@@ -568,15 +573,15 @@ class UI:
             #     return
 
             location = Location(location_index=index,
-                        eid=None,
-                        get_amount=self.get_amount,
-                        log=self.log,
-                        session=self.session,
-                        get_lottery=self.get_lottery,
-                        get_odds=self.get_odds,
-                        get_jiajian_num=self.get_jiajian_num,
-                        get_alianchu=self.get_alianchu,
-                        get_blianchu=self.get_blianchu)
+                                eid=None,
+                                get_amount=self.get_amount,
+                                log=self.log,
+                                session=self.session,
+                                get_lottery=self.get_lottery,
+                                get_odds=self.get_odds,
+                                get_jiajian_num=self.get_jiajian_num,
+                                get_alianchu=self.get_alianchu,
+                                get_blianchu=self.get_blianchu)
             self.location_list[index] = location
             self.var_start_list[index].set('已启动..')
         else:
@@ -587,11 +592,6 @@ class UI:
         self.var_start_list[index].set('启动')
 
 
-
-
 # 85。0。4183。83
-
-
 if __name__ == "__main__":
     UI()
-
