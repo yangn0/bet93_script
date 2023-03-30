@@ -1,3 +1,4 @@
+from looper import Looper
 from tkinter import *
 from tkinter import ttk
 import json
@@ -5,9 +6,11 @@ import threading
 import time
 import os
 from functools import partial
-
 import requests
-from looper import Looper
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)  # 屏蔽告警信息
+
+
 # from location import Location
 # from looper import Looper
 # from api import userInfo, home_LoginOrRegister_login
@@ -213,7 +216,8 @@ class UI:
         VScroll1 = Scrollbar(self.tv, orient='vertical', command=self.tv.yview)
         VScroll1.place(relx=0.971, rely=0.028, relwidth=0.024, relheight=0.958)
         self.tv.configure(yscrollcommand=VScroll1.set)
-        self.tv.tag_configure("evenColor", background="blue",font=('',0,'bold'))  # 设置颜色
+        self.tv.tag_configure("evenColor", background="blue",
+                              font=('', 0, 'bold'))  # 设置颜色
 
     def get_out_end(self):
         return self.var_out_end.get()
@@ -296,7 +300,7 @@ class UI:
     def insert_items(self, data: list) -> list:
         items = []
         for i in data:
-            if(data[3] == '8'):
+            if (data[4] == "8"):
                 item = self.tv.insert('', 0, values=i, tags=("evenColor"))
             else:
                 item = self.tv.insert('', 0, values=i)
@@ -305,11 +309,14 @@ class UI:
         return items
 
     def insert_item(self, data):
-        if(data[3] == '8'):
+        if (data[4] == "8"):
             item = self.tv.insert('', 0, values=data, tags=("evenColor"))
         else:
             item = self.tv.insert('', 0, values=data)
         return item
+
+    def delete_all_item(self):
+        self.tv.delete(*self.tv.get_children())
 
     def set_item(self, item, column, value):
         self.tv.set(item=item, column=column, value=value)
@@ -537,10 +544,12 @@ class UI:
                     set_one_out_end=self.set_one_out_end,
                     set_balance=self.set_balance,
                     insert_item=self.insert_item,
+                    delete_all_item=self.delete_all_item,
                     set_item=self.set_item,
                     write_config=self.write_config,
                     get_out_end=self.get_out_end,
                     set_out_end=self.set_out_end,
+
                 )
             self.looper.flag = True
             self.var_run.set('正在运行')

@@ -5,6 +5,8 @@ import xlutils.copy
 import xlwt
 import time
 
+import csv
+
 key = {
     '1道1': {
         "pl": 9.8,
@@ -1248,9 +1250,30 @@ key = {
     }
 }
 
+# ['编号', '父编号', '计划', '中挂', '第几轮', '第几注', '期号', '开奖结果', '投注内容', '投注第几名',  '投注金额', '盈亏']
+
+
+def write_2_excel(bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk, filename='bet_info.csv'):
+    header = ["时间", '编号', '父编号', '中挂',   '第几轮', '第几注',
+              '期号', '开奖结果', '计划', '投注内容', '投注第几名',  '投注金额', '盈亏']
+    if filename in os.listdir('.'):
+        # print("文件在")
+        with open(filename, 'a+', newline='') as csvfile:
+            spamwriter = csv.writer(csvfile)
+            spamwriter.writerow([time.strftime(
+                '%Y/%m/%d %H:%M:%S'), bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk])
+    else:
+        with open(filename, 'a+', newline='') as csvfile:
+            spamwriter = csv.writer(csvfile)
+            spamwriter.writerow(header)
+            spamwriter = csv.writer(csvfile)
+            spamwriter.writerow([time.strftime(
+                '%Y/%m/%d %H:%M:%S'), bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk])
 
 # ['编号', '父编号', '计划', '中挂', '第几轮', '第几注', '期号', '开奖结果', '投注内容', '投注第几名',  '投注金额', '盈亏']
-def write_2_excel(bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk, filename='下注记录.xls'):
+
+
+def write_2_excel_1(bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk, filename='下注记录.xls'):
     if filename in os.listdir('.'):
         # print("文件在")
         data = xlrd.open_workbook(filename)
@@ -1306,7 +1329,6 @@ def write_2_excel(bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk, fi
         workbook.save(filename)
 
 
-
 class Location:
 
     def __init__(self, id, p_id, plan, amount, insert_item, set_item, out_index=0, in_index=0, bet_times=1):
@@ -1328,7 +1350,7 @@ class Location:
         self.bet_issue = None
         self.bet_location = None  # 下注道
         self.bet_content = None  # 下注内容
-        self.bet_params = None # 下注参数
+        self.bet_params = None  # 下注参数
         self.bet_amount = None  # 下注金额
         self.bet_odd = None  # 下注赔率
         self.bet_confirm = False  # 下注确认
@@ -1362,7 +1384,7 @@ class Location:
                 # 外轮看下有没有爆
                 self.out_index += 1
                 if self.out_index >= len(self.amount):
-                    #外轮爆了
+                    # 外轮爆了
                     self.out_index = 0
                     self.in_index = 0
                     self.bet_times = 1
@@ -1376,7 +1398,6 @@ class Location:
         self.change_bet_location += 1
         return into
 
-
     def get_amount(self) -> int:
         return self.amount[self.out_index][self.in_index]
 
@@ -1387,7 +1408,7 @@ class Location:
         #     return -1
         print(f'id{self.id} out_index{self.out_index} in_index{self.in_index}')
         bet_params = []
-        #if self.in_index == 0 or not self.bet_content:
+        # if self.in_index == 0 or not self.bet_content:
         if (self.change_bet_location % len(self.amount[0]) == 0) or not self.bet_content:
             self.bet_location = last_result['result'].index(self.plan[0]) + 1
             for i in self.plan[1]:
@@ -1429,7 +1450,6 @@ class Location:
         self.bet_odd = bet_params[0]['odds']
         return bet_params
 
-
     def confirm(self, issue):
         if self.bet_confirm:
             return
@@ -1439,18 +1459,18 @@ class Location:
         # ['编号', '父编号', '中挂', '第几轮', '第几注', '期号', '开奖结果', '计划', '投注内容', '投注第几名',  '投注金额', '盈亏']
         self.item = self.insert_item([self.id, self.p_id, '', f'{self.out_index+1}', f'{self.bet_times}', f'{issue}', '', f'{self.plan[0]}', f'{self.bet_content}', f'{self.bet_location}',  f'{(self.bet_amount*len(self.bet_content))}', ''])
 
-
     def check_win_lose(self, result: dict):
 
-
         if '大' in self.bet_content or '小' in self.bet_content:
-            open_result = '大' if int(result['result'][self.bet_location-1]) > 5 else '小'
+            open_result = '大' if int(
+                result['result'][self.bet_location-1]) > 5 else '小'
             if self.bet_content[0] == open_result:
                 return '赢'
             else:
                 return '输'
         elif '单' in self.bet_content or '双' in self.bet_content:
-            open_result = '单' if int(result['result'][self.bet_location - 1]) % 2 == 1 else '双'
+            open_result = '单' if int(
+                result['result'][self.bet_location - 1]) % 2 == 1 else '双'
             if self.bet_content[0] == open_result:
                 return '赢'
             else:
@@ -1462,7 +1482,6 @@ class Location:
             else:
                 return '输'
 
-
     def handle_result(self, result: dict):
         if not self.bet_confirm:
             print(f'check_win_lose  self.bet_confirm:{self.bet_confirm}')
@@ -1472,26 +1491,35 @@ class Location:
             return
 
         if self.check_win_lose(result=result) == '赢':
-            profit = round(((self.bet_amount*self.bet_odd) - (len(self.bet_content) * self.bet_amount)), 2)
+            profit = round(((self.bet_amount*self.bet_odd) -
+                           (len(self.bet_content) * self.bet_amount)), 2)
             print(f'编号{self.id} 父编号{self.p_id} 中 第几轮{self.out_index+1} in_index{self.in_index} 第几注{self.bet_times} 期号{self.bet_issue} 投注内容{self.bet_content} 投注第几名{self.bet_location} 投注金额{self.bet_amount} 盈亏{profit}')
-            #['编号', '父编号', '中挂', '第几轮', '第几注', '期号', '开奖结果', '投注内容', '投注第几名', '投注金额', '盈亏']
-            write_2_excel(bh=f'{self.id}', fbh=f'{self.p_id}', jh=f'{self.plan[0]}', zg='中', djl=f'{self.out_index+1}', djz=f'{self.bet_times}', qh=f'{self.bet_issue}', kjjg=f'{result["result"]}', tznr=f'{self.bet_content}', tzdjm=f'{self.bet_location}', tzje=f'{(len(self.bet_content)*self.bet_amount)}', yk=f'{profit}', filename='下注记录.xls')
+            # ['编号', '父编号', '中挂', '第几轮', '第几注', '期号', '开奖结果', '投注内容', '投注第几名', '投注金额', '盈亏']
+            try:
+                write_2_excel(bh=f'{self.id}', fbh=f'{self.p_id}', jh=f'{self.plan[0]}', zg='中', djl=f'{self.out_index+1}', djz=f'{self.bet_times}', qh=f'{self.bet_issue}',
+                              kjjg=f'{result["result"]}', tznr=f'{self.bet_content}', tzdjm=f'{self.bet_location}', tzje=f'{(len(self.bet_content)*self.bet_amount)}', yk=f'{profit}')
+            except:
+                print("写入excel失败")
             info = self.update_bet_result('赢')
             info['profit'] = profit
-            self.set_item(item=self.item, column='中挂', value='中')
-            self.set_item(item=self.item, column='开奖结果', value=f'{result["result"]}')
-            self.set_item(item=self.item, column='盈亏', value=f'{profit}')
+            # self.set_item(item=self.item, column='中挂', value='中')
+            # self.set_item(item=self.item, column='开奖结果', value=f'{result["result"]}')
+            # self.set_item(item=self.item, column='盈亏', value=f'{profit}')
             self.bet_confirm = False
             return info
         else:
             profit = -1 * len(self.bet_content) * self.bet_amount
             print(f'编号{self.id} 父编号{self.p_id} 挂 第几轮{self.out_index+1} in_index{self.in_index} 第几注{self.bet_times} 期号{self.bet_issue} 投注内容{self.bet_content} 投注第几名{self.bet_location} 投注金额{self.bet_amount} 盈亏{profit}')
             # ['编号', '父编号', '中挂', '第几轮', '第几注', '期号', '开奖结果', '投注内容', '投注第几名', '投注金额', '盈亏']
-            write_2_excel(bh=f'{self.id}', fbh=f'{self.p_id}', jh=f'{self.plan[0]}', zg='挂', djl=f'{self.out_index + 1}', djz=f'{self.bet_times}', qh=f'{self.bet_issue}', kjjg=f'{result["result"]}', tznr=f'{self.bet_content}', tzdjm=f'{self.bet_location}', tzje=f'{(len(self.bet_content) * self.bet_amount)}', yk=f'{profit}', filename='下注记录.xls')
+            try:
+                write_2_excel(bh=f'{self.id}', fbh=f'{self.p_id}', jh=f'{self.plan[0]}', zg='挂', djl=f'{self.out_index + 1}', djz=f'{self.bet_times}', qh=f'{self.bet_issue}',
+                              kjjg=f'{result["result"]}', tznr=f'{self.bet_content}', tzdjm=f'{self.bet_location}', tzje=f'{(len(self.bet_content) * self.bet_amount)}', yk=f'{profit}')
+            except:
+                print("写入excel失败")
             info = self.update_bet_result('输')
             info['profit'] = profit
-            self.set_item(item=self.item, column='中挂', value='挂')
-            self.set_item(item=self.item, column='开奖结果', value=f'{result["result"]}')
-            self.set_item(item=self.item, column='盈亏', value=f'{profit}')
+            # self.set_item(item=self.item, column='中挂', value='挂')
+            # self.set_item(item=self.item, column='开奖结果', value=f'{result["result"]}')
+            # self.set_item(item=self.item, column='盈亏', value=f'{profit}')
             self.bet_confirm = False
             return info

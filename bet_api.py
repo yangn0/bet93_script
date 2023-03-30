@@ -9,7 +9,7 @@ import base64
 from functools import wraps
 
 
-request_timeout = (5, 6)
+request_timeout = (10, 20)
 
 class CatchException:
 
@@ -139,7 +139,6 @@ def ssid():
 
 
 # 登陆接口
-#account='hry622848', password='qwe249870'
 @CatchException(20, 6)
 def cashlogin(session: requests.Session, account='!guest!', password='!guest!', force_login=False):
     os.makedirs('account', exist_ok=True)
@@ -191,7 +190,7 @@ def cashlogin(session: requests.Session, account='!guest!', password='!guest!', 
 #
 
 # 最新一期开奖结果
-@CatchException(3, 3)
+@CatchException(10, 1)
 def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
     headers = {
         'authority': 'www.93cp16.com',
@@ -214,7 +213,7 @@ def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, 
         ('_', f'{round(time.time()*1000)}'),
     )
     response = session.get(f'https://www.93cp16.com/member/lastResult', headers=headers, timeout=request_timeout, verify=False, params=params)
-    #print(response.text)
+    print(response.text)
     response = response.json()
     # return {
     #     'draw_number': response['drawNumber'],
@@ -230,14 +229,16 @@ def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, 
     }
 
     hr = history_record(session=session, lottery=lottery, token=token, ssid1=ssid1, random=random)
+    print("hr %s"%len(hr))
     if hr:
         for k, v in hr.items():
             r[k] = v['result']
+    print("lastResult完成")
     return r
 
 
 # 下一期 期号
-@CatchException(1, 0)
+@CatchException(3, 0)
 def period(session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
     headers = {
         'authority': 'www.93cp16.com',
@@ -288,6 +289,15 @@ def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: 
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={json_["lottery"]}; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
+    #去掉虚拟投注
+    json_copy=json_.copy()
+    json_['bets']=list()
+    for i in json_copy['bets']:
+        if(i['amount']>=2):
+            json_['bets'].append(i)
+        else:
+            print("虚拟下注",i)
+            
     response = session.post('https://www.93cp16.com/member/bet', json=json_, headers=headers, timeout=(20, 20), verify=False)
     print(response.text)
     response = response.json()
@@ -497,8 +507,8 @@ def history_record(session: requests.Session, lottery: str, token: str, ssid1: s
             }
         return data
     else:
-        reponse1 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
-        reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+        reponse1 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
+        reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
 
         text = reponse1.text + reponse2.text
         #print(text)

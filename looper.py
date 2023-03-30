@@ -5,17 +5,20 @@ import requests
 import threading
 from location import Location
 
-input1=int(input("1极速飞艇 2幸运飞艇:"))
+input1=int(input("1极速飞艇 2幸运飞艇 3 SG飞艇:"))
 if(input1==1):
     lottery="LUCKYSB"
     print("极速飞艇")
-else:
+elif(input1==2):
     lottery="XYFT"
     print("幸运飞艇")
+elif(input1==3):
+    lottery="SGFT"
+    print("SG飞艇")
 
 class Looper:
 
-    def __init__(self, get_plan, get_amount, get_win_back, get_account, set_issue, set_result, set_next_issue, get_lottery_profit, set_lottery_profit, stop_running, get_win_stop, get_lose_stop,
+    def __init__(self, delete_all_item,get_plan, get_amount, get_win_back, get_account, set_issue, set_result, set_next_issue, get_lottery_profit, set_lottery_profit, stop_running, get_win_stop, get_lose_stop,
                  set_err_msg, get_one_out_end, set_one_out_end, set_balance, insert_item, set_item, write_config, get_out_end, set_out_end):
         self.get_plan = get_plan  # [['1', ['1', '2', '大']], ['1', ['1', '2', '大']]]
         self.get_amount = get_amount  # [[1, 3, 5], [33, 44, 55], [111, 222, 333]]
@@ -37,6 +40,7 @@ class Looper:
         self.set_one_out_end = set_one_out_end
         self.set_balance = set_balance
         self.insert_item = insert_item
+        self.delete_all_item=delete_all_item
         self.set_item = set_item
         self.write_config = write_config
         self.get_out_end = get_out_end
@@ -58,7 +62,7 @@ class Looper:
         while True:
             if self.last_bet_issue or self.flag:
                 self.logic()
-                time.sleep(25)
+                time.sleep(3)
                 self.write_config()
             time.sleep(1)
     
@@ -212,14 +216,18 @@ class Looper:
         remove_location_index.sort(reverse=True)
         for i in remove_location_index:
             self.location_list.pop(i)
-
-        print(json)
+        
+        #print(json)
         if json['bets']:
             bet_r = bet(session=self.session, json_=json, token=token, ssid1=ssid1, random=random_)
             if bet_r:
             #if putLottery(session=self.session, json=json):
                 self.last_bet_issue = bet_issue['cpqh']
                 self.set_balance(bet_r['balance'])
+                #5期一清空
+                if bet_issue['cpqh']!='':
+                    if int(bet_issue['cpqh'])%5==0:
+                        self.delete_all_item()
                 for l in self.location_list:
                     l.confirm(issue=bet_issue['cpqh'])
                 self.insert_item(['', '', '', '', '', '', '', '', '', '', '', ''])
