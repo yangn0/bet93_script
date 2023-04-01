@@ -59,13 +59,15 @@ class Looper:
         threading.Timer(0, self.loop).start()
 
     def loop(self):
-        while True:
-            if self.last_bet_issue or self.flag:
-                self.logic()
-                time.sleep(3)
-                self.write_config()
-            time.sleep(1)
+        self.logic2()
     
+    def logic2(self):
+        ssid1="cafc972161ab0ded340b71b7b4a841e4"
+        random_=""
+        token = cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'])
+        open_result = lastResult(session=self.session, lottery=lottery, token=token,ssid1=ssid1,random=random_)
+        
+
     def logic(self):
         # if time.time() - self.start_ts >= 3600:
         #         #     if self.get_account()['username'] and self.get_account()['password']:
