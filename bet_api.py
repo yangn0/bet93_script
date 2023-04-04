@@ -460,9 +460,9 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
 
 
 @CatchException(1, 0)
-def history_record(session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
-    today = datetime.datetime.now()
-    yesterday = today + datetime.timedelta(-1)
+def history_record(today,session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
+    
+    #yesterday = today + datetime.timedelta(-1)
     headers = {
         'authority': 'www.93cp16.com',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
@@ -482,8 +482,8 @@ def history_record(session: requests.Session, lottery: str, token: str, ssid1: s
 
     if lottery == 'AULUCKY5' or lottery == 'SSCJSC' or lottery== 'SGSSC':
         reponse1 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
-        reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
-        text = reponse1.text + reponse2.text
+        #reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+        text = reponse1.text
         #print(text)
         # 期号
         pattern = re.compile(r'<td class="period">(\d+?)</td>')
@@ -508,9 +508,9 @@ def history_record(session: requests.Session, lottery: str, token: str, ssid1: s
         return data
     else:
         reponse1 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
-        reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
+        #reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
 
-        text = reponse1.text + reponse2.text
+        text = reponse1.text
         #print(text)
 
         # 期号
