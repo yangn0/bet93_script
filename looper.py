@@ -6,7 +6,7 @@ import threading
 from location import Location,write_month_excel
 import datetime,sys
 
-input1=int(input("1极速飞艇 2幸运飞艇 3 SG飞艇:"))
+input1=int(input("1极速飞艇 2幸运飞艇 3SG飞艇 4极速赛车:"))
 day_num=int(input("要分析的天数："))
 if(input1==1):
     lottery="LUCKYSB"
@@ -17,6 +17,9 @@ elif(input1==2):
 elif(input1==3):
     lottery="SGFT"
     print("SG飞艇")
+elif(input1==4):
+    lottery="PK10JSC"
+    print("极速赛车")
 
 class Looper:
 
@@ -76,6 +79,7 @@ class Looper:
             day_dict[day.strftime("%Y-%m-%d")]=day_result
             print(day.strftime("%Y-%m-%d"))
         day_dict_keyslist=day_dict.keys()
+        get_plan_info=self.get_plan()
         for day in list(day_dict_keyslist)[::-1]:
             print(day)
             投注总额=0
@@ -87,8 +91,9 @@ class Looper:
             吃掉凶手=0
             bet_issue_list=day_dict[day].keys()
             for bet_issue in list(bet_issue_list)[::-1]:
-                self.set_issue(bet_issue)
-                self.set_result(day_dict[day][bet_issue]['result'])
+                print(bet_issue)
+                # self.set_issue(bet_issue)
+                # self.set_result(day_dict[day][bet_issue]['result'])
                 # 输赢判断
                 game_profit = 0
                 remove_location_index = []
@@ -135,11 +140,11 @@ class Looper:
                             elif r['result'] == '输':
                                 if r['end']:
                                     remove_location_index.append(i)
-                                    self.set_out_end((1 + self.get_out_end()))
+                                    #self.set_out_end((1 + self.get_out_end()))
                                     全挂次数+=1
                                 if r['out_index'] == 0 and r['in_lose']:
                                     #print('第一轮全爆')
-                                    self.set_one_out_end((1 + self.get_one_out_end()))
+                                    # self.set_one_out_end((1 + self.get_one_out_end()))
                                     第一轮全挂次数+=1
 
                             self.can_create_location = True
@@ -155,7 +160,7 @@ class Looper:
                 for kw in add_new_location:
                     l = Location(**kw)
                     self.location_list.append(l)
-                self.set_lottery_profit((self.get_lottery_profit() + game_profit))
+                # self.set_lottery_profit((self.get_lottery_profit() + game_profit))
                 self.last_bet_issue = ''
                 # 止盈止损
                 if self.get_lottery_profit() >= self.get_win_stop():
@@ -169,7 +174,7 @@ class Looper:
 
                 # 创建location
                 if self.can_create_location:
-                    for p in self.get_plan():
+                    for p in get_plan_info:
                         self.location_created_id += 1
                         l = Location(id=f'n{self.location_created_id}',
                                     p_id='',
