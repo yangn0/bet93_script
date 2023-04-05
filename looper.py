@@ -5,7 +5,7 @@ import requests
 import threading
 from location import Location
 
-input1=int(input("1极速飞艇 2幸运飞艇 3 SG飞艇:"))
+input1=int(input("1极速飞艇 2幸运飞艇 3 SG飞艇 4极速赛车:"))
 if(input1==1):
     lottery="LUCKYSB"
     print("极速飞艇")
