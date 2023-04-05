@@ -1457,7 +1457,8 @@ class Location:
         self.bet_confirm = True
         print(f'下注成功 编号{self.id} 父编号{self.p_id} 第几轮{self.out_index+1} in_index{self.in_index} 第几注{self.bet_times} 期号{issue} 投注内容{self.bet_content} 投注第几名{self.bet_location} 投注金额{self.bet_amount}')
         # ['编号', '父编号', '中挂', '第几轮', '第几注', '期号', '开奖结果', '计划', '投注内容', '投注第几名',  '投注金额', '盈亏']
-        self.item = self.insert_item([self.id, self.p_id, '', f'{self.out_index+1}', f'{self.bet_times}', f'{issue}', '', f'{self.plan[0]}', f'{self.bet_content}', f'{self.bet_location}',  f'{(self.bet_amount*len(self.bet_content))}', ''])
+        if self.bet_amount!=0:
+            self.item = self.insert_item([self.id, self.p_id, '', f'{self.out_index+1}', f'{self.bet_times}', f'{issue}', '', f'{self.plan[0]}', f'{self.bet_content}', f'{self.bet_location}',  f'{(self.bet_amount*len(self.bet_content))}', ''])
 
     def check_win_lose(self, result: dict):
 

@@ -15,6 +15,9 @@ elif(input1==2):
 elif(input1==3):
     lottery="SGFT"
     print("SG飞艇")
+elif(input1==4):
+    lottery="PK10JSC"
+    print("极速赛车")
 
 class Looper:
 
