@@ -1258,12 +1258,12 @@ def write_2_excel(bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk, fi
               '期号', '开奖结果', '计划', '投注内容', '投注第几名',  '投注金额', '盈亏']
     if filename in os.listdir('.'):
         # print("文件在")
-        with open(filename, 'a+', newline='',encoding='utf-8') as csvfile:
+        with open(filename, 'a+', newline='') as csvfile:
             spamwriter = csv.writer(csvfile)
             spamwriter.writerow([time.strftime(
                 '%Y/%m/%d %H:%M:%S'), bh, fbh, zg, djl, djz, qh, kjjg, jh, tznr, tzdjm, tzje, yk])
     else:
-        with open(filename, 'a+', newline='',encoding='utf-8') as csvfile:
+        with open(filename, 'a+', newline='') as csvfile:
             spamwriter = csv.writer(csvfile)
             spamwriter.writerow(header)
             spamwriter = csv.writer(csvfile)
@@ -1276,11 +1276,11 @@ def write_month_excel(date,投注总额,累计输赢金额,最高盈利金额,�
     header = ["日期","投注总额","累计输赢金额","最高盈利金额","最高亏损金额","第一轮全挂次数","全挂次数","吃掉凶手"]
     if filename in os.listdir('.'):
         # print("文件在")
-        with open(filename, 'a+', newline='',encoding='utf-8') as csvfile:
+        with open(filename, 'a+', newline='') as csvfile:
             spamwriter = csv.writer(csvfile)
             spamwriter.writerow([date,投注总额,累计输赢金额,最高盈利金额,最高亏损金额,第一轮全挂次数,全挂次数,吃掉凶手])
     else:
-        with open(filename, 'a+', newline='',encoding='utf-8') as csvfile:
+        with open(filename, 'a+', newline='') as csvfile:
             spamwriter = csv.writer(csvfile)
             spamwriter.writerow(header)
             spamwriter = csv.writer(csvfile)
