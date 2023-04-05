@@ -80,6 +80,9 @@ class Looper:
             print(day.strftime("%Y-%m-%d"))
         day_dict_keyslist=day_dict.keys()
         get_plan_info=self.get_plan()
+        止损金额=self.get_lose_stop()
+        止盈金额=self.get_win_stop()
+        win_back = self.get_win_back()
         for day in list(day_dict_keyslist)[::-1]:
             print(day)
             投注总额=0
@@ -109,7 +112,7 @@ class Looper:
                             累计输赢金额+=r['profit']
                             if r['result'] == '赢':
                                 remove_location_index.append(i)
-                                win_back = self.get_win_back()
+                                
                                 if win_back and (r['bet_times'] > 3) and (r['bet_times'] - win_back > 0):
                                 #if (win_back and not r['p_id'] and r['bet_times'] >= win_back[0] and r['bet_times'] - win_back[1] > 0) or (win_back and r['p_id'] and r['bet_times'] - win_back[1] > 0):
                                     new_bet_times = r['bet_times'] - win_back
@@ -163,13 +166,15 @@ class Looper:
                 # self.set_lottery_profit((self.get_lottery_profit() + game_profit))
                 self.last_bet_issue = ''
                 # 止盈止损
-                if self.get_lottery_profit() >= self.get_win_stop():
+                if 累计输赢金额 >= 止盈金额:
                     self.stop_running()
                     self.set_err_msg('止盈停止')
+                    input("止盈停止")
                     return
-                elif (-1 * self.get_lottery_profit()) >= self.get_lose_stop():
+                elif (-1 * 累计输赢金额) >= 止损金额:
                     self.stop_running()
                     self.set_err_msg('止损停止')
+                    input("止损停止")
                     return
 
                 # 创建location
@@ -233,172 +238,3 @@ class Looper:
                     # for l in self.location_list:
                     #     l.confirm(issue=bet_issue)
             write_month_excel(day,投注总额,累计输赢金额,最高盈利金额,最高亏损金额,第一轮全挂次数,全挂次数,吃掉凶手)
-
-
-    def logic(self):
-        # if time.time() - self.start_ts >= 3600:
-        #         #     if self.get_account()['username'] and self.get_account()['password']:
-        #         #         #if loginWzDf(session=self.session, account=self.get_account()['username'], password=self.get_account()['password']):
-        #         #         if cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'], force_login=True):
-        #         #             self.start_ts = time.time()
-        #         #     else:
-        #         #         #if loginGuest(session=self.session):
-        #         #         if cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'], force_login=True):
-        #         #             self.start_ts = time.time()
-
-        ssid1="cafc972161ab0ded340b71b7b4a841e4"
-        random_=""
-        #token="4ffed063922e2c1a029533ada871dba82ce6b8a7"
-        token = cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'])
-        #lottery = 'XYFT'
-        #open_result = findFjkjhmList(session=self.session)
-        open_result = lastResult(session=self.session, lottery=lottery, token=token,ssid1=ssid1,random=random_)
-        if not open_result:
-            print(f'开奖结果接口没有数据 {open_result}')
-            return
-
-        if self.last_bet_issue and (self.last_bet_issue not in open_result):
-            return
-
-        if self.last_bet_issue:
-            self.set_issue(self.last_bet_issue)
-            self.set_result(open_result[self.last_bet_issue])
-            print(f'开奖{self.last_bet_issue} {open_result[self.last_bet_issue]}')
-            # 输赢判断
-            game_profit = 0
-            remove_location_index = []
-            add_new_location = []
-            for i, location in enumerate(self.location_list):
-                if location:
-                    r = location.handle_result({
-                        'issue': self.last_bet_issue,
-                        'result': open_result[self.last_bet_issue]
-                    })
-                    if r:
-                        game_profit += r['profit']
-                        if r['result'] == '赢':
-                            remove_location_index.append(i)
-                            win_back = self.get_win_back()
-                            if win_back and (r['bet_times'] > 3) and (r['bet_times'] - win_back > 0):
-                            #if (win_back and not r['p_id'] and r['bet_times'] >= win_back[0] and r['bet_times'] - win_back[1] > 0) or (win_back and r['p_id'] and r['bet_times'] - win_back[1] > 0):
-                                new_bet_times = r['bet_times'] - win_back
-                                new_out_index = None
-                                net_in_index = None
-                                cnt = 0
-                                for o_i, _1 in enumerate(r['amount']):
-                                    for i_i, _2 in enumerate(_1):
-                                        cnt += 1
-                                        if cnt == new_bet_times:
-                                            new_out_index = o_i
-                                            net_in_index = i_i
-                                            break
-                                    if new_out_index:
-                                        break
-                                self.location_created_id += 1
-                                add_new_location.append({
-                                    'id': f'n{self.location_created_id}',
-                                    'p_id': r['id'],
-                                    'plan': r['plan'],
-                                    'amount': r['amount'],
-                                    'insert_item': self.insert_item,
-                                    'set_item': self.set_item,
-                                    'out_index': new_out_index,
-                                    'in_index': net_in_index,
-                                    'bet_times': new_bet_times
-                                })
-                        elif r['result'] == '输':
-                            if r['end']:
-                                remove_location_index.append(i)
-                                self.set_out_end((1 + self.get_out_end()))
-                            if r['out_index'] == 0 and r['in_lose']:
-                                print('第一轮全爆')
-                                self.set_one_out_end((1 + self.get_one_out_end()))
-
-                        self.can_create_location = True
-
-            remove_location_index.sort(reverse=True)
-            for i in remove_location_index:
-                self.location_list.pop(i)
-
-            for kw in add_new_location:
-                l = Location(**kw)
-                self.location_list.append(l)
-            self.set_lottery_profit((self.get_lottery_profit() + game_profit))
-            self.last_bet_issue = ''
-            # 止盈止损
-            if self.get_lottery_profit() >= self.get_win_stop():
-                self.stop_running()
-                self.set_err_msg('止盈停止')
-                return
-            elif (-1 * self.get_lottery_profit()) >= self.get_lose_stop():
-                self.stop_running()
-                self.set_err_msg('止损停止')
-                return
-
-        # 创建location
-        if self.can_create_location:
-            for p in self.get_plan():
-                self.location_created_id += 1
-                l = Location(id=f'n{self.location_created_id}',
-                             p_id='',
-                             plan=p,
-                             amount=self.get_amount(),
-                             insert_item=self.insert_item,
-                             set_item=self.set_item)
-                self.location_list.append(l)
-            self.can_create_location = False
-
-        # 获取下一期的期号
-        # bet_issue = getDownTimeAndQh(session=self.session)
-        bet_issue = period(session=self.session, lottery=lottery, token=token, ssid1=ssid1, random=random_)
-        if not bet_issue:
-            return
-        self.set_next_issue(bet_issue['cpqh'])
-
-
-        #balance = getHyje(session=self.session)
-        balance = account(session=self.session, token=token, ssid1=ssid1, random=random_)
-        if balance:
-            self.set_balance(balance)
-
-        # 组装下注数据
-        # json = {
-        #     'cpqh': bet_issue['cpqh'],
-        #     'cpbm': 58,
-        #     'category': 4,
-        #     'rlist': []
-        # }
-        json = {
-            'bets': [],
-            'drawNumber': bet_issue['cpqh'],
-            'ignore': True,
-            'lottery': lottery,
-        }
-
-        remove_location_index = []
-        for i, l in enumerate(self.location_list):
-            bet_params = l.get_bet_params(open_result['last_result'], bet_issue['cpqh'])
-            if bet_params == -1:
-                remove_location_index.append(i)
-            elif bet_params:
-                json['bets'] = json['bets'] + bet_params
-        remove_location_index.sort(reverse=True)
-        for i in remove_location_index:
-            self.location_list.pop(i)
-        
-        #print(json)
-        if json['bets']:
-            bet_r = bet(session=self.session, json_=json, token=token, ssid1=ssid1, random=random_)
-            if bet_r:
-            #if putLottery(session=self.session, json=json):
-                self.last_bet_issue = bet_issue['cpqh']
-                self.set_balance(bet_r['balance'])
-                #5期一清空
-                if bet_issue['cpqh']!='':
-                    if int(bet_issue['cpqh'])%5==0:
-                        self.delete_all_item()
-                for l in self.location_list:
-                    l.confirm(issue=bet_issue['cpqh'])
-                self.insert_item(['', '', '', '', '', '', '', '', '', '', '', ''])
-                sleep_time = (time.time() - (bet_issue['ndate'] / 1000))
-                time.sleep(sleep_time if sleep_time > 0 else 0)
