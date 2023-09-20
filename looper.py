@@ -80,7 +80,7 @@ class Looper:
         #         #         if cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'], force_login=True):
         #         #             self.start_ts = time.time()
 
-        ssid1="cafc972161ab0ded340b71b7b4a841e4"
+        ssid1="6c91cc1091d0ab63efee057fba5a2117"
         random_=""
         #token="4ffed063922e2c1a029533ada871dba82ce6b8a7"
         token = cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'])
