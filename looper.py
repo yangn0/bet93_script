@@ -69,7 +69,7 @@ class Looper:
         print("完成")
     
     def logic2(self):
-        ssid1="cafc972161ab0ded340b71b7b4a841e4"
+        ssid1="6c91cc1091d0ab63efee057fba5a2117"
         random_=""
         token = cashlogin(session=self.session, account=self.get_account()['username'], password=self.get_account()['password'])
         day_dict=dict()

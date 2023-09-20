@@ -8,7 +8,9 @@ import base64
 
 from functools import wraps
 
-
+main_url=input("输入网站主域名：")
+# main_url="93193j.com"
+# www.93cp16.com
 request_timeout = (10, 20)
 
 class CatchException:
@@ -33,7 +35,7 @@ class CatchException:
 
 def generate():
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"',
         'accept': '*/*',
         'x-requested-with': 'XMLHttpRequest',
@@ -43,11 +45,11 @@ def generate():
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/home/',
+        'referer': f'https://{main_url}/home/',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'cookie': 'affid=null;ssid1=cafc972161ab0ded340b71b7b4a841e4',
     }
-    response = requests.get('https://www.93cp16.com/web/rest/captcha/generate', headers=headers, verify=False, timeout=(6.05, 6.05))
+    response = requests.get(f'https://{main_url}/web/rest/captcha/generate', headers=headers, verify=False, timeout=(6.05, 6.05))
     print(response.text)
     data = response.json()
     image_data = base64.b64decode(data['result']['backgroundImage'].split(',')[1])
@@ -72,7 +74,7 @@ def base64_api(uname, pwd, typeid):
 
 def validate(positionX, positionY, uuid):
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"',
         'accept': 'application/json, text/javascript, */*; q=0.01',
         'content-type': 'application/json;charset=UTF-8',
@@ -80,11 +82,11 @@ def validate(positionX, positionY, uuid):
         'sec-ch-ua-mobile': '?0',
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36',
         'sec-ch-ua-platform': '"Windows"',
-        'origin': 'https://www.93cp16.com',
+        'origin': f'https://{main_url}',
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/home/',
+        'referer': f'https://{main_url}/home/',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'cookie': 'affid=null;ssid1=cafc972161ab0ded340b71b7b4a841e4',
     }
@@ -93,7 +95,7 @@ def validate(positionX, positionY, uuid):
         'positionY': positionY,
         'uuid': uuid
     }
-    response = requests.post('https://www.93cp16.com/web/rest/captcha/validate', headers=headers, json=json_, verify=False, timeout=(6.05, 6.05))
+    response = requests.post(f'https://{main_url}/web/rest/captcha/validate', headers=headers, json=json_, verify=False, timeout=(6.05, 6.05))
     print(response.text)
     data = response.json()
     cryptograph = data['result']['cryptograph']
@@ -118,7 +120,7 @@ def ssid():
         'Accept-Language': 'zh-CN,zh;q=0.9'
     }
     s = requests.Session()
-    response = s.get('https://www.93cp16.com/ssid1?url=/member/agreement?_OLID_=0ce6293789f17d45360a775508b8ab5e362a42d7', headers=headers, verify=False)
+    response = s.get(f'https://{main_url}/ssid1?url=/member/agreement?_OLID_=0ce6293789f17d45360a775508b8ab5e362a42d7', headers=headers, verify=False)
     return dict(s.cookies.items())
 
 
@@ -161,24 +163,24 @@ def cashlogin(session: requests.Session, account='!guest!', password='!guest!', 
         positionX = int(base64_api(uname='sheli19888', pwd='yang1314', typeid=33)) - 9
         cryptograph, code = validate(positionX=positionX, positionY=positionY, uuid=uuid)
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'accept': 'application/json, text/plain, */*',
         'sec-ch-ua-mobile': '?0',
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
         'sec-ch-ua-platform': '"macOS"',
-        'origin': 'https://www.93cp16.com',
+        'origin': f'https://{main_url}',
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/home/',
+        'referer': f'https://{main_url}/home/',
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': 'affid=null',
     }
     if 'guest' in account:
-        url = f'https://www.93cp16.com/web/rest/cashlogin?account={account}&password={password}'
+        url = f'https://{main_url}/web/rest/cashlogin?account={account}&password={password}'
     else:
-        url = f'https://www.93cp16.com/web/rest/cashlogin?account={account}&password={password}&code={code}&cryptograph={cryptograph}'
+        url = f'https://{main_url}/web/rest/cashlogin?account={account}&password={password}&code={code}&cryptograph={cryptograph}'
     response = session.post(url, headers=headers, verify=False)
     print(response.text)
     t = response.json()['message'].split('=')[1]
@@ -193,11 +195,11 @@ def cashlogin(session: requests.Session, account='!guest!', password='!guest!', 
 @CatchException(10, 1)
 def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'accept': '*/*',
         'accept-language': 'zh-CN,zh;q=0.9',
         #'cookie': 'c8f15dac3426=b2d853b1965dfcaff3bda9139db2d4b266635d06; ssid1=e65e7eed118acca44a6e455bb59ea741; random=7258; affid=null; token=b2d853b1965dfcaff3bda9139db2d4b266635d06',
-        'referer': 'https://www.93cp16.com/member/index',
+        'referer': f'https://{main_url}/member/index',
         'sec-ch-ua': '^\\^.Not/A)Brand^\\^;v=^\\^99^\\^, ^\\^Google',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '^\\^Windows^\\^',
@@ -212,7 +214,7 @@ def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, 
         ('lottery', lottery),
         ('_', f'{round(time.time()*1000)}'),
     )
-    response = session.get(f'https://www.93cp16.com/member/lastResult', headers=headers, timeout=request_timeout, verify=False, params=params)
+    response = session.get(f'https://{main_url}/member/lastResult', headers=headers, timeout=request_timeout, verify=False, params=params)
     print(response.text)
     response = response.json()
     # return {
@@ -241,10 +243,10 @@ def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, 
 @CatchException(3, 0)
 def period(session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'accept': '*/*',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'referer': 'https://www.93cp16.com/member/load?lottery=XYFT&page=lm',
+        'referer': f'https://{main_url}/member/load?lottery=XYFT&page=lm',
         'sec-ch-ua': '^\\^.Not/A)Brand^\\^;v=^\\^99^\\^, ^\\^Google',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '^\\^Windows^\\^',
@@ -259,7 +261,7 @@ def period(session: requests.Session, lottery: str, token: str, ssid1: str, rand
         ('lottery', lottery),
         ('_', f'{round(time.time() * 1000)}'),
     )
-    response = session.get(f'https://www.93cp16.com/member/period', headers=headers, timeout=request_timeout, verify=False, params=params)
+    response = session.get(f'https://{main_url}/member/period', headers=headers, timeout=request_timeout, verify=False, params=params)
     #print(response.text)
     response = response.json()
     return {
@@ -273,7 +275,7 @@ def period(session: requests.Session, lottery: str, token: str, ssid1: str, rand
 @CatchException(1, 0)
 def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: str):
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'accept': '*/*',
         'content-type': 'application/json',
@@ -281,11 +283,11 @@ def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: 
         'sec-ch-ua-mobile': '?0',
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
         'sec-ch-ua-platform': '"macOS"',
-        'origin': 'https://www.93cp16.com',
+        'origin': f'https://{main_url}',
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/member/index',
+        'referer': f'https://{main_url}/member/index',
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={json_["lottery"]}; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
@@ -298,7 +300,7 @@ def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: 
         else:
             print("虚拟下注",i)
             
-    response = session.post('https://www.93cp16.com/member/bet', json=json_, headers=headers, timeout=(20, 20), verify=False)
+    response = session.post(f'https://{main_url}/member/bet', json=json_, headers=headers, timeout=(20, 20), verify=False)
     print(response.text)
     response = response.json()
     try:
@@ -316,7 +318,7 @@ def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: 
 @CatchException(2, 2)
 def account(session: requests.Session, token: str, ssid1: str, random: str):
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'accept': '*/*',
         'x-requested-with': 'XMLHttpRequest',
@@ -326,11 +328,11 @@ def account(session: requests.Session, token: str, ssid1: str, random: str):
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/member/index',
+        'referer': f'https://{main_url}/member/index',
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
-    response = session.get(f'https://www.93cp16.com/member/account?_={round(time.time() * 1000)}', headers=headers, timeout=request_timeout, verify=False)
+    response = session.get(f'https://{main_url}/member/account?_={round(time.time() * 1000)}', headers=headers, timeout=request_timeout, verify=False)
     #print(response.text)
     response = response.json()
     # return {
@@ -342,7 +344,7 @@ def account(session: requests.Session, token: str, ssid1: str, random: str):
 
 def draw(session: requests.Session, cardid: str, drawcode: str, drawamount: int, token: str, ssid1: str, random: str):
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'accept': '*/*',
         'content-type': 'application/json',
@@ -350,27 +352,27 @@ def draw(session: requests.Session, cardid: str, drawcode: str, drawamount: int,
         'sec-ch-ua-mobile': '?0',
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
         'sec-ch-ua-platform': '"macOS"',
-        'origin': 'https://www.93cp16.com',
+        'origin': f'https://{main_url}',
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/member/index',
+        'referer': f'https://{main_url}/member/index',
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'accept': '*/*',
         'x-requested-with': 'XMLHttpRequest',
         'sec-ch-ua-mobile': '?0',
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
         'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'origin': 'https://www.93cp16.com',
+        'origin': f'https://{main_url}',
         'sec-fetch-site': 'same-origin',
         'sec-fetch-mode': 'cors',
         'sec-fetch-dest': 'empty',
-        'referer': 'https://www.93cp16.com/member/payment/withdrawal',
+        'referer': f'https://{main_url}/member/payment/withdrawal',
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': f'affid=null; c8f15dac3426={token}; _skin_=red; defaultLT=SGFT; _bindSecQue=true; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
@@ -383,7 +385,7 @@ def draw(session: requests.Session, cardid: str, drawcode: str, drawamount: int,
         'code': '',
         'currency': ''
     }
-    response = session.post('https://www.93cp16.com/member/payment/draw', headers=headers, data=data, verify=False)
+    response = session.post(f'https://{main_url}/member/payment/draw', headers=headers, data=data, verify=False)
     #print(response.text)
     r = ''
     try:
@@ -397,7 +399,7 @@ def draw(session: requests.Session, cardid: str, drawcode: str, drawamount: int,
 def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
     today = datetime.datetime.now()
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"macOS"',
@@ -408,13 +410,13 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
         'sec-fetch-mode': 'navigate',
         'sec-fetch-user': '?1',
         'sec-fetch-dest': 'iframe',
-        'referer': f'https://www.93cp16.com/member/dresult?lottery=AULUCKY10&date={today.strftime("%Y-%m-%d")}&table=1',
+        'referer': f'https://{main_url}/member/dresult?lottery=AULUCKY10&date={today.strftime("%Y-%m-%d")}&table=1',
         'accept-language': 'zh-CN,zh;q=0.9',
         'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
 
     if lottery == 'AULUCKY5' or lottery == 'SSCJSC' or lottery== 'SGSSC':
-        reponse = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+        reponse = session.get(url=f'https://{main_url}/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
         pattern = re.compile(r'<td class="name"><span class="b.+>(\d+)</span></td>')
         #print(reponse.text)
         result = []
@@ -424,7 +426,7 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
         period_num = len(result) / 5
         if True:
             yesterday = today + datetime.timedelta(-1)
-            reponse = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+            reponse = session.get(url=f'https://{main_url}/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
             #print(reponse.text)
             yesterday_result = pattern.findall(reponse.text)
             result = result + yesterday_result
@@ -436,7 +438,7 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
 
         return history
     else:
-        reponse = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+        reponse = session.get(url=f'https://{main_url}/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
         pattern = re.compile(r'<td class="name ballname"><span class="b.+>(\d+)</span></td>')
         #print(reponse.text)
         result = []
@@ -446,7 +448,7 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
         period_num = len(result) / 10
         if True:
             yesterday = today + datetime.timedelta(-1)
-            reponse = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+            reponse = session.get(url=f'https://{main_url}/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
             #print(reponse.text)
             yesterday_result = pattern.findall(reponse.text)
             result = result + yesterday_result
@@ -463,8 +465,9 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
 def history_record(today,session: requests.Session, lottery: str, token: str, ssid1: str, random: str):
     
     #yesterday = today + datetime.timedelta(-1)
+    # token="d04e021c29bd43091e9b39706d7347d26b1cf781"
     headers = {
-        'authority': 'www.93cp16.com',
+        'authority': f'{main_url}',
         'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"macOS"',
@@ -475,13 +478,13 @@ def history_record(today,session: requests.Session, lottery: str, token: str, ss
         'sec-fetch-mode': 'navigate',
         'sec-fetch-user': '?1',
         'sec-fetch-dest': 'iframe',
-        'referer': f'https://www.93cp16.com/member/dresult?lottery=AULUCKY10&date={today.strftime("%Y-%m-%d")}&table=1',
+        'referer': f"https://{main_url}/member/dresult",
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'983476c949fb={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
 
     if lottery == 'AULUCKY5' or lottery == 'SSCJSC' or lottery== 'SGSSC':
-        reponse1 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
+        reponse1 = session.get(url=f'https://{main_url}/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
         #reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False)
         text = reponse1.text
         #print(text)
@@ -507,7 +510,7 @@ def history_record(today,session: requests.Session, lottery: str, token: str, ss
             }
         return data
     else:
-        reponse1 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
+        reponse1 = session.get(url=f'https://{main_url}/member/dresult?lottery={lottery}&date={today.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
         #reponse2 = session.get(url=f'https://www.93cp16.com/member/dresult?lottery={lottery}&date={yesterday.strftime("%Y-%m-%d")}&table=1', headers=headers, verify=False,timeout=request_timeout)
 
         text = reponse1.text
@@ -536,8 +539,30 @@ def history_record(today,session: requests.Session, lottery: str, token: str, ss
 
 
 if __name__ == '__main__':
-    s = requests.Session()
-    #cashlogin(session=s, force_login=True)
-    r = history_record(s, lottery='PK10JSC', token='33e885a4a2944a9b5c217bedd75d9cc19b12afde')
-    print(r)
-    pass
+    # s = requests.Session()
+    # #cashlogin(session=s, force_login=True)
+    # r = history_record(session=s, lottery='LUCKYSB', token='d04e021c29bd43091e9b39706d7347d26b1cf781',ssid1="6c91cc1091d0ab63efee057fba5a2117",random="9026")
+    # print(r)
+    # pass
+    token="d04e021c29bd43091e9b39706d7347d26b1cf781"
+    ssid1="6c91cc1091d0ab63efee057fba5a2117"
+    random=""
+    headers = {
+        'authority': f'{main_url}',
+        'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-user': '?1',
+        'sec-fetch-dest': 'iframe',
+        'referer': "https://93193j.com/member/dresult",
+        'accept-language': 'zh-CN,zh;q=0.9',
+        'cookie': f'983476c949fb={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
+    }
+    r=requests.get("https://93193j.com/member/dresult?lottery=LUCKYSB",headers=headers)
+
+    print(r.text)
