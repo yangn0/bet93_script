@@ -12,6 +12,8 @@ main_url=input("输入网站主域名：")
 # main_url="93193j.com"
 # www.93cp16.com
 request_timeout = (10, 20)
+key_token=input("输入key_token：")
+# 36a9fc3a3b65
 
 class CatchException:
 
@@ -208,7 +210,7 @@ def lastResult(session: requests.Session, lottery: str, token: str, ssid1: str, 
         'sec-fetch-site': 'same-origin',
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
         'x-requested-with': 'XMLHttpRequest',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}',
     }
     params = (
         ('lottery', lottery),
@@ -255,7 +257,7 @@ def period(session: requests.Session, lottery: str, token: str, ssid1: str, rand
         'sec-fetch-site': 'same-origin',
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
         'x-requested-with': 'XMLHttpRequest',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT={lottery}; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     params = (
         ('lottery', lottery),
@@ -289,7 +291,7 @@ def bet(session: requests.Session, json_: dict, token: str, ssid1: str, random: 
         'sec-fetch-dest': 'empty',
         'referer': f'https://{main_url}/member/index',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT={json_["lottery"]}; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT={json_["lottery"]}; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     #去掉虚拟投注
     json_copy=json_.copy()
@@ -330,7 +332,7 @@ def account(session: requests.Session, token: str, ssid1: str, random: str):
         'sec-fetch-dest': 'empty',
         'referer': f'https://{main_url}/member/index',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     response = session.get(f'https://{main_url}/member/account?_={round(time.time() * 1000)}', headers=headers, timeout=request_timeout, verify=False)
     #print(response.text)
@@ -358,7 +360,7 @@ def draw(session: requests.Session, cardid: str, drawcode: str, drawamount: int,
         'sec-fetch-dest': 'empty',
         'referer': f'https://{main_url}/member/index',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     headers = {
         'authority': f'{main_url}',
@@ -374,7 +376,7 @@ def draw(session: requests.Session, cardid: str, drawcode: str, drawamount: int,
         'sec-fetch-dest': 'empty',
         'referer': f'https://{main_url}/member/payment/withdrawal',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'affid=null; c8f15dac3426={token}; _skin_=red; defaultLT=SGFT; _bindSecQue=true; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'affid=null; {key_token}={token}; _skin_=red; defaultLT=SGFT; _bindSecQue=true; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
     data = {
         'drawamount': str(drawamount),
@@ -412,7 +414,7 @@ def dresult(session: requests.Session, lottery: str, token: str, ssid1: str, ran
         'sec-fetch-dest': 'iframe',
         'referer': f'https://{main_url}/member/dresult?lottery=AULUCKY10&date={today.strftime("%Y-%m-%d")}&table=1',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'c8f15dac3426={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
 
     if lottery == 'AULUCKY5' or lottery == 'SSCJSC' or lottery== 'SGSSC':
@@ -480,7 +482,7 @@ def history_record(today,session: requests.Session, lottery: str, token: str, ss
         'sec-fetch-dest': 'iframe',
         'referer': f"https://{main_url}/member/dresult",
         'accept-language': 'zh-CN,zh;q=0.9',
-        'cookie': f'983476c949fb={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
+        'cookie': f'{key_token}={token}; _skin_=red; defaultLT=AULUCKY10; affid=null; token={token}; ssid1={ssid1}; random={random}',
     }
 
     if lottery == 'AULUCKY5' or lottery == 'SSCJSC' or lottery== 'SGSSC':
